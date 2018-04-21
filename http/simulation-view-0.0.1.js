@@ -17,6 +17,7 @@ var g_scale = 100;
 var g_scrollX = 0;
 var g_scrollY = 0;
 var g_walls = [];
+var g_path = [];
 
 function setupSimulationView() {
   function getResourceFrom(url) {
@@ -78,9 +79,25 @@ function setupSimulationView() {
 
 function addSimulationViewData(data) {
   if (data.dataType == 1001) {
-    const x = data["opendlv_sim_Frame"]["x"];
-    const y = data["opendlv_sim_Frame"]["y"];
-    const yaw = data["opendlv_sim_Frame"]["yaw"];
+
+    const minPathStep = 0.2;
+
+    const frame = data["opendlv_sim_Frame"];
+    const x = frame["x"];
+    const y = frame["y"];
+    const yaw = frame["yaw"];
+
+    if (g_path.length > 0) {
+      const prevX = g_path[g_path.length - 1]["x"];
+      const prevY = g_path[g_path.length - 1]["y"];
+      const dX = x - prevX;
+      const dY = y - prevY;
+      if (Math.sqrt(dX * dX + dY * dY) > minPathStep) {
+        g_path.push(frame);
+      }
+    } else {
+      g_path.push(frame);
+    }
 
     const width = 0.16;
     const length = 0.36;
@@ -105,6 +122,21 @@ function addSimulationViewData(data) {
     const fslength = slength / 4;
 
     context.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (g_path.length > 0) {
+      context.save();
+      context.beginPath();
+      context.strokeStyle = "#f22";
+      context.moveTo(sx, sy);
+      for(var i = g_path.length - 1; i >= 0; i--) {
+        const prevFrame = g_path[i];
+        const prevSx = g_scale * prevFrame["x"] - g_scrollX;
+        const prevSy = -g_scale * prevFrame["y"] - g_scrollY;
+        context.lineTo(prevSx, prevSy);
+        context.stroke();
+      }
+      context.restore();
+    }
 
     context.save();
     context.beginPath();
