@@ -13,8 +13,26 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM chalmersrevere/opendlv-ui-server-amd64:v0.0.8
+# Part to build opendlv-ui-default.
+FROM chalmersrevere/opendlv-ui-server-amd64:v0.0.10 as builder
+MAINTAINER Ola Benderius "ola.benderius@chalmers.se"
+RUN apk update && \
+    apk --no-cache add \
+        cmake \
+        g++ \
+        make
+        
+ADD . /opt/sources
+WORKDIR /opt/sources
+RUN mkdir build && \
+    cd build && \
+    cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/tmp/opendlv-ui-default-dest .. && \
+    make && make install
+
+# Part to deploy opendlv-ui-default.
+FROM alpine:3.8
 MAINTAINER Ola Benderius "ola.benderius@chalmers.se"
 
-COPY ./http/ /srv/http
-ENTRYPOINT ["/usr/bin/opendlv-ui-server", "--http-root=/srv/http", "--port=8000"]
+WORKDIR /usr/bin
+COPY --from=builder /tmp/opendlv-ui-default-dest /usr
+CMD ["/usr/bin/opendlv-ui-default"]

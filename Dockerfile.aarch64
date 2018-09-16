@@ -14,7 +14,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Part to build opendlv-ui-default.
-FROM chalmersrevere/opendlv-ui-server-armhf:v0.0.10 as builder
+FROM chalmersrevere/opendlv-ui-server-aarch64:v0.0.10 as builder
 MAINTAINER Ola Benderius "ola.benderius@chalmers.se"
 
 RUN [ "cross-build-start" ]
@@ -39,7 +39,7 @@ RUN mkdir build && \
 RUN [ "cross-build-end" ]
 
 # Part to deploy opendlv-ui-default.
-FROM pipill/armhf-alpine:edge
+FROM docker.io/project31/aarch64-alpine-qemu:3.5-7
 MAINTAINER Ola Benderius "ola.benderius@chalmers.se"
 
 WORKDIR /usr/bin
