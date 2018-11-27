@@ -23,7 +23,7 @@ docker run --rm --init --net=host --name=opendlv-ui-default -v ${PWD}/http:/srv/
 ```
 
 Now, point your webbrowser to the IP address and port 8000 where you
-started this microservice to see any currently exchanged messages.
+started this microservice to see the hosted files.
 
 ## License
 This project is released under the terms of the GNU GPLv3 License - [![License: GPLv3](https://img.shields.io/badge/license-GPL--3-blue.svg
