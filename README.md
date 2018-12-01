@@ -25,16 +25,16 @@ started this microservice to access the hosted files.
 
 ## HTML and JavaScript examples
 
-To run any of the examples below, save it as [i]index.html[/i] in a folder called [i]http[/i] and run the docker command above. In the folder, the following files needs also to be present (or any later versions):
+To run any of the examples below, save it as *index.html* in a folder called *http* and run the docker command above. In the folder, the following files needs also to be present (or any later versions):
 * [libcluon.js](https://bintray.com/chrberger/libcluon/javascript#files)
 * [opendlv.odvd](https://github.com/chalmers-revere/opendlv.standard-message-set/releases)
 
 
 ### Minimum example
 
-This example shows how to connect to a running OpenDLV conference and how to read and write messages to that conference. To run the example, start <strong>one instance</strong> of the opendlv-ui-default with the below web content. Make sure to include the opendlv.odvd and libcluon.js files in the http folder. Then, open two browser tabs or pages pointing at http://localhost:8000. The two pages will be to clients connected to the UI default server, and messages that are being sent from one browser is received by all other connected browsers.
+This example shows how to connect to a running OpenDLV conference and how to read and write messages to that conference. To run the example, start **one instance** of the opendlv-ui-default with the below web content. Make sure to include the opendlv.odvd and libcluon.js files in the http folder. Then, open two browser tabs or pages pointing at http://localhost:8000. The two pages will be to clients connected to the UI default server, and messages that are being sent from one browser is received by all other connected browsers.
 
-```
+```html
 <!DOCTYPE html>
 <html>
   <head>
