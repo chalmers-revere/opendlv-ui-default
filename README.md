@@ -10,16 +10,14 @@ The microservice depends on [opendlv-ui-server](https://github.com/chalmers-reve
 
 This microservice is created automatically on changes to this repository via
 Docker's public registry for:
-* [x86_64](https://hub.docker.com/r/chalmersrevere/opendlv-ui-default-amd64/tags/)
-* [armhf](https://hub.docker.com/r/chalmersrevere/opendlv-ui-default-armhf/tags/)
-* [aarch](https://hub.docker.com/r/chalmersrevere/opendlv-ui-default-aarch/tags/)
+* [x86_64, armhf, aarch](https://hub.docker.com/r/chalmersrevere/opendlv-ui-default-multi/tags/)
 
 To use this microservice for hosting web content from a folder and for bi-directional
-messaging using the OpenDLV standard message set that are exchanged in a running OpenDLV.io session
+messaging using the OpenDLV standard message set that are exchanged in a running OpenDLV session
 (running at 111 in the example), simply run it as follows:
 
 ```
-docker run --rm --init --net=host --name=opendlv-ui-default -v ${PWD}/http:/srv/http -p 8000:8000 chalmersrevere/opendlv-ui-default-amd64:v0.0.5 opendlv-ui-default --http-root=/srv/http --port=8000 --cid=111
+docker run --rm --init --net=host --name=opendlv-ui-default -v ${PWD}/http:/srv/http -p 8000:8000 chalmersrevere/opendlv-ui-default-multi:v0.0.6 opendlv-ui-default --http-root=/srv/http --port=8000 --cid=111
 ```
 
 Now, point your webbrowser to the IP address and port 8000 where you
