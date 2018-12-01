@@ -37,7 +37,6 @@ int32_t main(int32_t argc, char **argv)
     std::cerr << "Example: " << argv[0] << " --cid=111 --port=8000 --http-root=./http" << std::endl;
     retCode = 1;
   } else {
-    uint32_t const ID{(commandlineArguments["id"].size() != 0) ? static_cast<uint32_t>(std::stoi(commandlineArguments["id"])) : 0};
     bool const VERBOSE{commandlineArguments.count("verbose") != 0};
     uint16_t const CID = static_cast<uint16_t>(std::stoi(commandlineArguments["cid"]));
 
@@ -46,9 +45,6 @@ int32_t main(int32_t argc, char **argv)
     
     std::string const SSL_CERT_PATH{(commandlineArguments["ssl-cert-path"].size() != 0) ? commandlineArguments["ssl-cert-path"] : ""};
     std::string const SSL_KEY_PATH{(commandlineArguments["ssl-key-path"].size() != 0) ? commandlineArguments["ssl-key-path"] : ""};
-
-    (void)ID;
-    (void)VERBOSE;
 
     auto httpRequestDelegate([&HTTP_ROOT](HttpRequest const &httpRequest, 
           std::shared_ptr<SessionData>, std::string const & /*clientIp*/) -> std::unique_ptr<HttpResponse>
@@ -98,15 +94,24 @@ int32_t main(int32_t argc, char **argv)
       });    
     cluon::OD4Session od4{CID, onIncomingEnvelope};
 
-    auto dataReceivedDelegate([&od4](std::string const &message, std::string const & /*clientIp*/, uint32_t /*httpClientId*/) {
+    auto dataReceivedDelegate([&od4, &ws, &VERBOSE](std::string const &message, std::string const &clientIp, uint32_t clientId) {
         std::stringstream sstr(message);
         while (sstr.good()) {
           auto tmp{cluon::extractEnvelope(sstr)};
           if (tmp.first) {
-            cluon::data::Envelope env{tmp.second};
-            env.sent(cluon::time::now());
-            env.sampleTimeStamp(cluon::time::now());
-            od4.send(std::move(env));
+            cluon::data::Envelope envelope{tmp.second};
+            envelope.sent(cluon::time::now());
+            envelope.sampleTimeStamp(cluon::time::now());
+            od4.send(std::move(envelope));
+
+            std::string data = cluon::serializeEnvelope(std::move(envelope));
+            ws.sendDataToAllOtherClients(data, clientId);
+           
+            if (VERBOSE) {
+              std::cout << "Received message " << envelope.dataType() << " from client " 
+              << clientId << " (" << clientIp << "). Injecting into running "
+              << "conference, and sending to all other connected clients." << std::endl;
+            }
           }
         }
       });
