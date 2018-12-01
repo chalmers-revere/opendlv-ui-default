@@ -14,15 +14,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Part to build opendlv-ui-default.
-FROM chalmersrevere/opendlv-ui-server-armhf:v0.0.10 as builder
+FROM chalmersrevere/opendlv-ui-server-multi:v0.0.11 as builder
 MAINTAINER Ola Benderius "ola.benderius@chalmers.se"
-
-RUN [ "cross-build-start" ]
-
-RUN cat /etc/apk/repositories && \
-    echo http://dl-4.alpinelinux.org/alpine/v3.7/main > /etc/apk/repositories && \
-    echo http://dl-4.alpinelinux.org/alpine/v3.7/community >> /etc/apk/repositories
-
 RUN apk update && \
     apk --no-cache add \
         cmake \
@@ -36,10 +29,8 @@ RUN mkdir build && \
     cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/tmp/opendlv-ui-default-dest .. && \
     make && make install
 
-RUN [ "cross-build-end" ]
-
 # Part to deploy opendlv-ui-default.
-FROM pipill/armhf-alpine:edge
+FROM chalmersrevere/opendlv-ui-server-multi:v0.0.11
 MAINTAINER Ola Benderius "ola.benderius@chalmers.se"
 
 WORKDIR /usr/bin
