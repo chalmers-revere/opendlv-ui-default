@@ -1,3 +1,5 @@
+Moved to https://git.opendlv.org.
+
 # opendlv-ui-default
 
 The opendlv-ui-default is a basic HTTP/Websocket implementation that hands out web content from static files in a folder, and connects to a running OpenDLV session for bi-directional data transmission. 
